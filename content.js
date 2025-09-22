@@ -48,9 +48,9 @@
 
     // Get the current selection text
     function getSelectionText() {
-    const sel = window.getSelection();
-    if (!sel) return '';
-    return sel.toString().trim();
+        const sel = window.getSelection();
+        if (!sel) return '';
+        return sel.toString().trim();
     }
 
 
@@ -93,8 +93,9 @@
 
         // debounce calls
         if (debounceTimer) clearTimeout(debounceTimer);
+        
         debounceTimer = setTimeout(() => {
-        requestTranslate(text, rect);
+            requestTranslate(text, rect);
         }, DEBOUNCE_MS);
     });
 
@@ -103,6 +104,7 @@
     document.addEventListener('mousedown', (ev) => {
         const sel = getSelectionText();
         if (!sel) removeBubble();
+        console.log("[i] Selected Text: ", sel);
     });
 
-});
+})();

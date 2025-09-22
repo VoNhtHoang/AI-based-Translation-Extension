@@ -19,32 +19,10 @@
         <input id="targetLang" type="text" value="vi" />
     </label>
 
-    <button id="save">Save</button>
+    <button id="save" >Save</button>
 
     <div id="msg"></div>
 
-
-<script>
-    const apiKeyInput = document.getElementById('apiKey');
-    const targetInput = document.getElementById('targetLang');
-    const msg = document.getElementById('msg');
-    
-    document.getElementById('save').addEventListener('click', ()=>{
-        const apiKey = apiKeyInput.value.trim();
-        const target = targetInput.value.trim() || 'vi';
-    
-        chrome.storage.sync.set({openai_api_key: apiKey, target_lang: target}, ()=>{
-            msg.textContent = 'Saved.';
-            setTimeout( ()=> msg.textContent='', (1200));
-        });
-    });
-
-
-    // Load existing
-    chrome.storage.sync.get(['openai_api_key','target_lang'], (items)=>{
-        apiKeyInput.value = items.openai_api_key || '';
-        targetInput.value = items.target_lang || 'vi';
-    });
-</script>
+    <script src="options.js"></script>
 </body>
 </html>

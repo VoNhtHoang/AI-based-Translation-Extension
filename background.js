@@ -7,12 +7,14 @@ let targetLang = 'vi'; // default target language
 chrome.storage.sync.get(['openai_api_key','target_lang'], (items) => {
     apiKey = items.openai_api_key || null;
     targetLang = items.target_lang || 'vi';
+    // console.log("[i]", items.openai_api_key);
 });
 
 
 chrome.storage.onChanged.addListener((changes) => {
     if (changes.openai_api_key) apiKey = changes.openai_api_key.newValue;
     if (changes.target_lang) targetLang = changes.target_lang.newValue;
+    console.log("[i] API key changed: ", changes.openai_api_key);
 });
 
 

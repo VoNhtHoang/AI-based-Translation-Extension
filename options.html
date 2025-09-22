@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Auto Translate Options</title>
+<style>
+    body{font-family: Arial, sans-serif; padding: 12px}
+    label{display:block; margin-top:8px}
+    input[type=text], textarea{width:100%}
+</style>
+</head>
+<body>
+    <h3>Auto Select Translator - Options</h3>
+    <label>OpenAI API Key (Bearer):
+        <input id="apiKey" type="text" placeholder="sk-..." />
+    </label>
+    
+    <label>Target language code (e.g. 'vi' for Vietnamese, 'en' for English):
+        <input id="targetLang" type="text" value="vi" />
+    </label>
+
+    <button id="save">Save</button>
+
+    <div id="msg"></div>
+
+
+<script>
+    const apiKeyInput = document.getElementById('apiKey');
+    const targetInput = document.getElementById('targetLang');
+    const msg = document.getElementById('msg');
+    
+    document.getElementById('save').addEventListener('click', ()=>{
+        const apiKey = apiKeyInput.value.trim();
+        const target = targetInput.value.trim() || 'vi';
+    
+        chrome.storage.sync.set({openai_api_key: apiKey, target_lang: target}, ()=>{
+            msg.textContent = 'Saved.';
+            setTimeout( ()=> msg.textContent='', (1200));
+        });
+    });
+
+
+    // Load existing
+    chrome.storage.sync.get(['openai_api_key','target_lang'], (items)=>{
+        apiKeyInput.value = items.openai_api_key || '';
+        targetInput.value = items.target_lang || 'vi';
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+    "manifest_version": 3,
+    "name": "Auto Select Translator",
+    "version": "1.0",
+    "description": "Tự động dịch văn bản khi bôi đen — gọi API dịch (ví dụ OpenAI).",
+    "permissions": [
+        "storage",
+        "scripting",
+        "activeTab",
+        "contextMenus"
+        ],
+    
+    "host_permissions": [
+        "https://api.openai.com/*"
+    ],
+    
+    "background": {
+        "service_worker": "background.js"
+    },
+    
+    "content_scripts": [
+    {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"],
+        "run_at": "document_idle"
+    }
+    ],
+    
+    "options_page": "options.html",
+    
+    "icons": {
+        "48": "icons/icon-sensor-48.png",
+        "128": "icons/icon-sensor.png"
+    }
+}

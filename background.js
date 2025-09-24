@@ -26,12 +26,19 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         // Required for async response
         return true;
     }
+    // async resp
+    return false;
 });
 
 
 async function translateText(text) {
-    if (!apiKey) throw new Error('No API key set in extension options.');
-    
+    if (!apiKey){ 
+        console.log("[i] Error: No API ket set!");
+        throw new Error('No API key set in extension options.');
+    }
+
+    console.log('chrome.runtime is', chrome.runtime);
+
     // Construct prompt for translation. You can adjust to your preferred model/payload.
     
     const system = `You are a helpful translator. Translate the user text into ${targetLang}. Keep translation concise. Output only the translated text, without extra commentary.`;

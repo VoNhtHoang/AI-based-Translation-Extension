@@ -2,7 +2,7 @@
 (function(){
     let lastSelection = '';
     let debounceTimer = null;
-    const DEBOUNCE_MS = 600; // tránh gọi API quá nhanh
+    const DEBOUNCE_MS = 1000; // tránh gọi API quá nhanh
 
     function createBubble(){
         const bubble = document.createElement('div');
@@ -34,7 +34,7 @@
     }
 
 
-    function showBubble(x,y,text) {
+    function showBubble(x, y, text, type = 'ok') {
         let b = document.getElementById('auto-translate-bubble');
 
         if (!b) b = createBubble();
@@ -43,6 +43,14 @@
         b.style.left = x + 'px';
         b.style.top = y + 'px';
 
+        if (type === 'error') {
+            setTimeout(() => {
+                // chỉ remove nếu bubble vẫn là loại error
+                if (b && b.dataset.type === 'error') b.remove();
+            }, 3000);
+        }
+
+        b.dataset.type = type;
     }
 
 
@@ -56,18 +64,16 @@
 
     async function requestTranslate(text, clientRect) {
         try {
-            const resp = await chrome.runtime.sendMessage({type:'translate', text});
-
+            const resp = await chrome.runtime.sendMessage({type:'translate', text: text});
             if (resp && resp.ok) {
                 // show bubble near selection
                 const x = clientRect ? (clientRect.left + window.scrollX) : (window.scrollX + 20);
                 const y = clientRect ? (clientRect.bottom + window.scrollY + 8) : (window.scrollY + 20);
 
-                showBubble(x, y, resp.result);
-
+                showBubble(x, y, resp.result, 'ok');
             } else {
-
-                showBubble(clientRect.left + window.scrollX, clientRect.bottom + window.scrollY + 8, 'Translation error: ' + (resp && resp.error ? resp.error : 'unknown'));
+                showBubble(x, y, 'Translation error!' + (resp && resp.error ? resp.error : 'unknown'), 'error');            
+                // showBubble(clientRect.left + window.scrollX, clientRect.bottom + window.scrollY + 8, 'Translation error: ' + (resp && resp.error ? resp.error : 'unknown'));
             }
         } 
         catch (e) {
@@ -90,10 +96,8 @@
         const range = sel.rangeCount ? sel.getRangeAt(0) : null;
         const rect = range ? range.getBoundingClientRect() : null;
 
-
         // debounce calls
         if (debounceTimer) clearTimeout(debounceTimer);
-        
         debounceTimer = setTimeout(() => {
             requestTranslate(text, rect);
         }, DEBOUNCE_MS);
